@@ -1,5 +1,8 @@
 package com.narola.krushit;
 
+import com.narola.krushit.commons.StatusConstant;
+import com.narola.krushit.entity.*;
+
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -9,207 +12,238 @@ import java.util.List;
 public class MyRide {
     private List<Customer> customerList = new ArrayList<>();
     private List<Driver> driverList = new ArrayList<>();
-    private List<RideRequest> rideRequestsList = new ArrayList<>();
+    private List<RideRequest> rideRequestList = new ArrayList<>();
     private List<Ride> rideList = new ArrayList<>();
     private List<Route> routeList = new ArrayList<>();
+    private List<String> vehicleList = new ArrayList<>();
 
     public static void main(String[] args) {
         MyRide myRide = new MyRide();
 
-        //add route
-        Route route1 = new Route("Surat", "Ahmedabad", 150);
-        myRide.addRoute(route1);
+        myRide.addRoute(new Route("Surat", "Ahmedabad", 150));
+        myRide.addRoute(new Route("Mumbai", "Kolkata", 1700));
 
-        Route route2 = new Route("Mumbai", "Hydrabad", 150);
-        myRide.addRoute(route2);
-
-        System.out.println("route List :: " + myRide.routeList);
-
-        //register driver
-        Driver driver1 = new Driver(1, "Raj", "Raja", new BigInteger("9874563214"), "rajraja@gmail.com", "DL14-0123654787");
+        // Registering Drivers
+        Driver driver1 = new Driver("Raj", "Raja", new BigInteger("9874563214"), "rajraja@gmail.com", "DL14-0123654787");
         myRide.registerDriver(driver1);
 
-        Vehicle vehicle1 = new SedanCar(2, "3W", "Petrol", "High", "Modrate", 4);
+        Vehicle vehicle1 = new SedanCar("3W", "Petrol", "High", "Moderate", 4);
         driver1.addVehical(vehicle1);
+        myRide.addVehicle(vehicle1);
 
-        Driver driver2 = new Driver(2, "Shri", "Vastava", new BigInteger("5641239874"), "shri@gmail.com", "GJ05-0123654787");
+        Driver driver2 = new Driver("Shri", "Vastava", new BigInteger("5641239874"), "shri@gmail.com", "GJ05-0123654787");
         myRide.registerDriver(driver2);
 
-        Vehicle vehicle2 = new SedanCar(3, "3W", "Petrol", "Low", "Modrate", 5);
+        Vehicle vehicle2 = new SuvCar("3W", "Petrol", 'S', 100, "Low");
         driver2.addVehical(vehicle2);
+        myRide.addVehicle(vehicle2);
 
-        // Create Customer
-        Customer customer1 = new Customer(3, "Rushit", "Bahtiyar", new BigInteger("9876543214"), "rkb@narola.email");
-        //Register customer
+        Driver driver3 = new Driver("Arjun", "Dada", new BigInteger("8523697412"), "arjuna@gmail.com", "GJ05-4521361236");
+        myRide.registerDriver(driver3);
+
+        Vehicle vehicle3 = new SuvCar("3W", "Diesel", 'S', 75, "Moderate");
+        driver3.addVehical(vehicle3);
+        myRide.addVehicle(vehicle3);
+
+        System.out.println("Vehicles :: " + myRide.vehicleList);
+
+        // Registering Customer
+        Customer customer1 = new Customer("Rushit", "Bahtiyar", new BigInteger("9876543214"), "rkb@narola.email");
         myRide.registerCustomer(customer1);
 
-        Customer customer2 = new Customer(3, "Rushit", "Bahtiyar", new BigInteger("9876543214"), "rkb@narola.email");
-        myRide.registerCustomer(customer2);
-
-        //customer request for a ride
-        String dateString = "2025-01-16";
-        LocalDate rideDate = LocalDate.parse(dateString);
+        // Creating Ride Request
         RideRequest rideRequest = new RideRequest.Builder()
-                .setPickUpLocation("Surat")
-                .setDropOffLocation("Ahmedabad")
+                .setPickUpLocation("Mumbai")
+                .setDropOffLocation("Kolkata")
                 .setCustomer(customer1)
                 .setRideRequestDate(LocalDate.now())
                 .setPickUpTime(LocalTime.of(10, 30))
                 .setDropOffTime(LocalTime.of(11, 30))
-                .setVehicleType("Sedan")
+                .setVehicleType("suv")
                 .setCapacity(4)
                 .build();
 
-        //System.out.println(rideRequest);
-        double[] arr = myRide.isRouteSupported(rideRequest);
+        System.out.println(rideRequest);
+        myRide.rideRequestList.add(rideRequest);
 
-        //add ride request to list
-        myRide.rideRequestsList.add(rideRequest);
+        try {
+            Ride ride = myRide.processRideRequest(rideRequest);
+            if (ride != null) {
+                myRide.rideList.add(ride);
+            }
+        } catch (Exception e) {
+            System.out.println("\u26A0 \u26A0 " + e.getMessage() + " \u26A0 \u26A0");
+        }
 
-        //get ride object
-        Ride ride = myRide.requestForRide(rideRequest);
-        myRide.rideList.add(ride);
+        System.out.println("=========================================================");
+        System.out.println("Ride Requests :: " + myRide.rideRequestList);
+
+        System.out.println("=========================================================");
+        System.out.println("Rides :: " + myRide.rideList);
     }
 
-    public void registerDriver(Driver driver){
+    public void addVehicle(Vehicle vehicle) {
+        if (vehicle instanceof SedanCar) {
+            vehicleList.add("sedan");
+        } else if (vehicle instanceof SuvCar) {
+            vehicleList.add("suv");
+        } else if (vehicle instanceof AutoRickshow) {
+            vehicleList.add("auto");
+        } else if (vehicle instanceof Bike) {
+            vehicleList.add("bike");
+        }
+    }
+
+    public void registerDriver(Driver driver) {
+        driver.setUserID(driverList.size() + 1);
         driverList.add(driver);
         System.out.println("Driver Registered Successfully...!!!");
     }
 
-    public void registerCustomer(Customer customer){
+    public void registerCustomer(Customer customer) {
+        customer.setUserID(customerList.size() + 1);
         customerList.add(customer);
         System.out.println("Customer Registered Successfully...!!!");
     }
 
-    public void addRoute(Route route){
+    public void addRoute(Route route) {
         routeList.add(route);
         System.out.println("Route Added Successfully...!!!");
     }
 
-    public void displayAllCustomer(){
-        System.out.println("=======================   Customer List  =====================");
-        for (Customer cust : customerList) {
-            System.out.println(cust);
-        }
-        System.out.println("==============================================================");
-        System.out.println();
-    }
-
-    private double[] isRouteSupported(RideRequest request) {
-        System.out.println("In isRouteSupported");
-        double[] fareDetails = new double[2];
-        double distance = 0.0;
-        boolean isSupported = false;
-
+    private boolean isRouteAvailable(RideRequest request) {
         for (Route route : routeList) {
             if (route.getPickUpLocation().equalsIgnoreCase(request.getPickUpLocation()) &&
                     route.getDropOffLocation().equalsIgnoreCase(request.getDropOffLocation())) {
-                distance = route.getDistance();
-                isSupported = true;
-                System.out.println("Found :: " + distance + " " + isSupported);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private FareDetails calculateFare(RideRequest request) throws Exception {
+        Route matchedRoute = null;
+        for (Route route : routeList) {
+            if (route.getPickUpLocation().equalsIgnoreCase(request.getPickUpLocation()) &&
+                    route.getDropOffLocation().equalsIgnoreCase(request.getDropOffLocation())) {
+                matchedRoute = route;
                 break;
             }
         }
 
-        if (!isSupported) {
-            System.out.println("Service not available for this route.");
-            return null;
+        if (matchedRoute == null) {
+            throw new Exception("Service not available for this route.");
         }
 
-        double rate = 0.0;
-        String type = request.getVehicleType();
-        switch (type.toLowerCase()) {
-            case "bike":
-                rate = new Bike().calculateFare(distance);
-                break;
-            case "sedan":
-                rate = new SedanCar().calculateFare(distance);
-                break;
-            case "suv":
-                rate = new SuvCar().calculateFare(distance);
-                break;
-            case "autorickshaw":
-                rate = new AutoRickshow().calculateFare(distance);
-                break;
-            default:
-                System.out.println("Invalid vehicle type: " + type);
-                return null;
-        }
+        double distance = matchedRoute.getDistance();
+        double rate;
 
-        fareDetails[0] = rate;
-        fareDetails[1] = distance;
-
-        System.out.println("Route supported. Total fare: $" + rate + ", Distance: " + distance + " km");
-        return fareDetails;
-    }
-
-
-    private Ride requestToDriver(Driver driver, RideRequest request, double[] arr){
-        if(driver.requestConfirmation(request)){
-            Ride ride = new Ride.Builder()
-                    .setRideID(1)
-                    .setRideStatus("Completed")
-                    .setPickUpLocation(request.getPickUpLocation())
-                    .setDropOffLocation(request.getDropOffLocation())
-                    .setCustomer(request.getCustomer())
-                    .setDriver(driver)
-                    .setRideDate(request.getRideRequestDate())
-                    .setPickUpTime(request.getPickUpTime())
-                    .setDropOffTime(request.getDropOffTime())
-                    .setDistance(arr[1])
-                    .setTotalCost(arr[0])
-                    .build();
-            printTicket(ride);
-            return ride;
+        if (request.getVehicleType().equalsIgnoreCase("bike")) {
+            rate = new Bike().calculateFare(distance);
+        } else if (request.getVehicleType().equalsIgnoreCase("sedan")) {
+            rate = new SedanCar().calculateFare(distance);
+        } else if (request.getVehicleType().equalsIgnoreCase("suv")) {
+            rate = new SuvCar().calculateFare(distance);
+        } else if (request.getVehicleType().equalsIgnoreCase("auto")) {
+            rate = new AutoRickshow().calculateFare(distance);
         } else {
-            System.out.println("Sorry..!! Service Unavailable for this route");
-            return null;
+            throw new Exception("Invalid vehicle type: " + request.getVehicleType());
         }
+
+        return new FareDetails(rate, distance);
     }
 
-    public Ride requestForRide(RideRequest rideRequest) {
-        double[] fareDetails = isRouteSupported(rideRequest);
-        if (fareDetails == null) {
-            System.out.println("Sorry, we are unable to proceed with your request.");
-            return null;
-        }
-
+    private Ride assignDriverToRide(RideRequest request, FareDetails fareDetails) {
         List<Driver> availableDrivers = getAvailableDrivers();
-        if (availableDrivers.isEmpty()) {
-            System.out.println("No drivers are currently available.");
-            return null;
+
+        for (Driver driver : availableDrivers) {
+            System.out.println("Attempting with Driver: " + driver.getFirstName() + " " + driver.getLastName());
+            if (!driver.isLastTimeRejected() && driver.isAvailable() &&
+                    request.getVehicleType().equalsIgnoreCase(driver.getVehicleType(driver.getVehicle())) &&
+                        driver.requestConfirmation(request)) {
+                driver.setAvailable(false);
+                System.out.println("Your rider is " + driver.getFirstName() + " " + driver.getLastName());
+                return new Ride.Builder()
+                        .setRideID(rideList.size() + 1)
+                        .setRideStatus(StatusConstant.RIDE_SCHEDULED)
+                        .setPickUpLocation(request.getPickUpLocation())
+                        .setDropOffLocation(request.getDropOffLocation())
+                        .setCustomer(request.getCustomer())
+                        .setDriver(driver)
+                        .setRideDate(request.getRideRequestDate())
+                        .setPickUpTime(request.getPickUpTime())
+                        .setDropOffTime(request.getDropOffTime())
+                        .setDistance(fareDetails.getDistance())
+                        .setTotalCost(fareDetails.getRate())
+                        .build();
+            }
         }
 
-        Driver assignedDriver = availableDrivers.get(0);
-        System.out.println("Assigned Driver: " + assignedDriver.getFirstName() + " " + assignedDriver.getLastName());
-
-        Ride ride = requestToDriver(assignedDriver, rideRequest, fareDetails);
-        if (ride == null) {
-            System.out.println("Ride request failed. The driver rejected the request.");
-            return null;
-        }
-
-        System.out.println("Ride confirmed successfully!");
-        System.out.println("Driver :: " + ride.getDriver().getFirstName() + " " + ride.getDriver().getLastName());
-        ride.getDriver().setAvailable(false);
-        return ride;
+        request.setRideRequestStatus(StatusConstant.RIDE_REQUEST_STATUS_REJECTED);
+        System.out.println("No available drivers at the moment.");
+        return null;
     }
-
 
     private List<Driver> getAvailableDrivers() {
         List<Driver> availableDrivers = new ArrayList<>();
         for (Driver driver : driverList) {
-            if (driver.isAvailable() && !driver.isLastTimeRejected()) {
+            if (driver.isAvailable()) {
                 availableDrivers.add(driver);
             }
-        }
-        if (availableDrivers.isEmpty()) {
-            System.out.println("No drivers available for the selected route.");
         }
         return availableDrivers;
     }
 
-    public static void printTicket(Ride ride){
+    public Ride processRideRequest(RideRequest rideRequest) throws Exception {
+        if (!isRouteAvailable(rideRequest)) {
+            throw new Exception("Ride not supported for the requested route.");
+        }
+
+        if (!isVehicleAvailable(rideRequest)) {
+            throw new Exception("Sorry your requested vehicle is not available");
+        }
+
+        FareDetails fareDetails = calculateFare(rideRequest);
+        Ride ride = assignDriverToRide(rideRequest, fareDetails);
+        if (ride != null) {
+            processRide(ride);
+            rideRequest.setRideRequestStatus(StatusConstant.RIDE_REQUEST_STATUS_ACCEPTED);
+        }
+        return ride;
+    }
+
+    private boolean isVehicleAvailable(RideRequest rideRequest) {
+        for (String vehicle : vehicleList) {
+            if (rideRequest.getVehicleType().equalsIgnoreCase(vehicle)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void processRide(Ride ride) {
+        printTicket(ride);
+        if (ride != null) {
+            System.out.print("Ride is Ongoing");
+            simulateRideProgress();
+            ride.setRideStatus(StatusConstant.RIDE_COMPLETED);
+            System.out.println("\nRide Completed...!!!");
+        }
+    }
+
+    private void simulateRideProgress() {
+        for (int i = 0; i < 5; i++) {
+            try {
+                System.out.print(".");
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                System.out.println("Unexpected interruption during ride.");
+            }
+        }
+    }
+
+    public static void printTicket(Ride ride) {
         System.out.println("\n=========== Ride Details ===============");
         System.out.println("Ride ID            : " + ride.getRideID());
         System.out.println("Pick-Up Location   : " + ride.getPickUpLocation());
