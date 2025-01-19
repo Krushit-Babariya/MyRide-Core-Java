@@ -1,15 +1,13 @@
-package com.narola.krushit;
+package com.narola.krushit.entity;
 
 public abstract class Vehicle {
-    private int vehicleID;
     private String vehicleType;
     private String fuelType;
 
     public Vehicle() {
     }
 
-    public Vehicle(int vehicleID, String vehicleType, String fuelType) {
-        this.vehicleID = vehicleID;
+    public Vehicle(String vehicleType, String fuelType) {
         this.vehicleType = vehicleType;
         this.fuelType = fuelType;
     }
@@ -25,7 +23,6 @@ public abstract class Vehicle {
     @Override
     public String toString() {
         return "Vehicle{" +
-                "vehicleID=" + vehicleID +
                 ", vehicleType='" + vehicleType + '\'' +
                 ", fuelType='" + fuelType + '\'' +
                 '}';

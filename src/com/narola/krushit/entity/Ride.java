@@ -1,4 +1,4 @@
-package com.narola.krushit;
+package com.narola.krushit.entity;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

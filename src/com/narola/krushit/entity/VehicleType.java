@@ -1,4 +1,4 @@
-package com.narola.krushit;
+package com.narola.krushit.entity;
 
 public enum VehicleType {
     TWOWHEELER,

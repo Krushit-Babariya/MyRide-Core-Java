@@ -1,4 +1,4 @@
-package com.narola.krushit;
+package com.narola.krushit.entity;
 
 import java.math.BigInteger;
 
@@ -16,8 +16,8 @@ public class Driver extends User {
         isLastTimeRejected = lastTimeRejected;
     }
 
-    public Driver(int userID, String firstName, String lastLame, BigInteger phoneNo, String emailID, String licenseNumber) {
-        super(userID, firstName, lastLame, phoneNo, emailID);
+    public Driver(String firstName, String lastLame, BigInteger phoneNo, String emailID, String licenseNumber) {
+        super(firstName, lastLame, phoneNo, emailID);
         this.available = true;
         this.licenseNumber = licenseNumber;
     }
@@ -90,7 +90,7 @@ public class Driver extends User {
     }
 
     public boolean requestConfirmation(RideRequest request){
-        boolean[] acceptance = {true, true, true, true, true};
+        boolean[] acceptance = {true, false, true, false, true};
         int index = (int) (Math.random() * acceptance.length);
 
         boolean ans = acceptance[index];
@@ -101,18 +101,16 @@ public class Driver extends User {
         return true;
     }
 
-    public static void printTicket(Ride ride){
-        System.out.println("\n=========== Ride Details ===============");
-        System.out.println("Ride ID            : " + ride.getRideID());
-        System.out.println("Pick-Up Location   : " + ride.getPickUpLocation());
-        System.out.println("Drop-Off Location  : " + ride.getDropOffLocation());
-        System.out.println("Customer           : " + ride.getCustomer().getFirstName() + " " + ride.getCustomer().getLastName());
-        System.out.println("Driver             : " + ride.getDriver().getFirstName() + " " + ride.getDriver().getLastName());
-        System.out.println("Ride Date          : " + ride.getRideDate());
-        System.out.println("Pick-Up Time       : " + ride.getPickUpTime());
-        System.out.println("Drop-Off Time      : " + ride.getDropOffTime());
-        System.out.println("Distance           : " + ride.getDistance() + " km");
-        System.out.println("Total Cost         : $" + String.format("%.2f", ride.getTotalCost()));
-        System.out.println("========================================");
+    public String getVehicleType(Vehicle vehicle) {
+        if (vehicle instanceof SedanCar) {
+            return "sedan";
+        } else if (vehicle instanceof SuvCar) {
+            return "suv";
+        } else if (vehicle instanceof AutoRickshow) {
+            return "auto";
+        } else if (vehicle instanceof Bike) {
+            return "bike";
+        }
+        return null;
     }
 }

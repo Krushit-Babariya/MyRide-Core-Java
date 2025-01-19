@@ -1,11 +1,11 @@
-package com.narola.krushit;
+package com.narola.krushit.entity;
 
 import java.math.BigInteger;
 
 public class Customer extends User {
 
-    public Customer(int userID, String firstName, String lastLame, BigInteger phoneNo, String emailID) {
-        super(userID, firstName, lastLame, phoneNo, emailID);
+    public Customer(String firstName, String lastLame, BigInteger phoneNo, String emailID) {
+        super(firstName, lastLame, phoneNo, emailID);
     }
 
     @Override

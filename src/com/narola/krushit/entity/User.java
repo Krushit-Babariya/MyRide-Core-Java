@@ -1,4 +1,4 @@
-package com.narola.krushit;
+package com.narola.krushit.entity;
 
 import java.math.BigInteger;
 
@@ -9,8 +9,7 @@ public abstract class User {
     private BigInteger phoneNo;
     private String emailID;
 
-    public User(int userID, String firstName, String lastName, BigInteger phoneNo, String emailID) {
-        this.userID = userID;
+    public User(String firstName, String lastName, BigInteger phoneNo, String emailID) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNo = phoneNo;

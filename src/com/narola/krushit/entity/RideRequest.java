@@ -1,13 +1,20 @@
-package com.narola.krushit;
+package com.narola.krushit.entity;
+
+import com.narola.krushit.commons.StatusConstant;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class RideRequest {
-    private String rideRequestStatus = "Pending";
+    private String rideRequestStatus = StatusConstant.RIDE_REQUEST_STATUS_PENDING;
     private String pickUpLocation;
     private String dropOffLocation;
     private Customer customer;
+
+    public void setRideRequestStatus(String rideRequestStatus) {
+        this.rideRequestStatus = rideRequestStatus;
+    }
+
     private LocalDate rideRequestDate;
     private LocalTime pickUpTime;
     private LocalTime dropOffTime;

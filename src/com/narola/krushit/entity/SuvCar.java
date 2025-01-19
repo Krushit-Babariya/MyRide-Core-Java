@@ -1,4 +1,4 @@
-package com.narola.krushit;
+package com.narola.krushit.entity;
 
 public class SuvCar extends Car {
     public final int capacity = 6;
@@ -9,8 +9,8 @@ public class SuvCar extends Car {
     public SuvCar() {
     }
 
-    public SuvCar(int vehicleID, String vehicleType, String fuelType, char trunkSize, int towingCapacity, String groundClearance) {
-        super(vehicleID, vehicleType, fuelType, groundClearance);
+    public SuvCar(String vehicleType, String fuelType, char trunkSize, int towingCapacity, String groundClearance) {
+        super(vehicleType, fuelType, groundClearance);
         this.trunkSize = trunkSize;
         this.towingCapacity = towingCapacity;
     }
